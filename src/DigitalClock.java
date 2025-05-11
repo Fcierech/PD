@@ -17,23 +17,11 @@ public class DigitalClock extends Clock {
         if (type == ClockType.H24) {
             return super.toString();
         } else  {
-            int h = getHour();
-            int m = getMinute();
-            int s = getSecond();
+            String ampm = h < 12 ? "AM" : "PM";
+            h = h % 12;
+            if (h == 0) h = 12; 
+            return String.format("%d:%02d:%02d %s", h, m, s, ampm);
         }
     }
-
-    private int getSecond() {
-        return
-    }
-
-    private int getMinute() {
-        return
-    }
-
-    private int getHour() {
-
-    }
-
 
 }
