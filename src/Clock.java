@@ -2,6 +2,15 @@ import java.time.LocalTime;
 
 public abstract class Clock {
 
+    public int h, m, s;
+
+    public void setCurrentTime() {
+        LocalTime now = LocalTime.now();
+        this.h = now.getHour();
+        this.m = now.getMinute();
+        this.s = now.getSecond();
+    }
+
     private LocalTime time;
     public void time(int h, int m, int s){
         if(h >= 24 || h<0){
