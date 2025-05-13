@@ -7,7 +7,8 @@ public class DigitalClock extends Clock {
 
     private ClockType type;
 
-    public DigitalClock(ClockType type) {
+    public DigitalClock(City city, ClockType type) {
+        super(city);
         this.type = type;
         setCurrentTime();
     }

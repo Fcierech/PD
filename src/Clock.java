@@ -3,10 +3,23 @@ import java.time.LocalTime;
 public abstract class Clock {
 
     public int h, m, s;
+    private City city;
+
+    public Clock(City city) {
+        this.city = city;
+        setCurrentTime();
+    }
 
     public void setCurrentTime() {
         LocalTime now = LocalTime.now();
-        this.h = now.getHour();
+        int utc = now.getHour();
+
+        if (city != null) {
+            utc += city.getUtc();
+            utc = (utc + 24) % 24;
+        }
+
+        this.h = utc;
         this.m = now.getMinute();
         this.s = now.getSecond();
     }
@@ -28,8 +41,13 @@ public abstract class Clock {
         return String.format("%02d:%02d:%02d",time.getHour(), time.getMinute(), time.getSecond());
     }
 
-    public setCity {
+    public void setCity (City newCity) {
+        int oldUtc = city != null ? city.getUtc() : 0;
+        int newUtc = newCity.getUtc();
+        int utcDiff = newUtc - oldUtc;
 
+        this.h = (this.h + utcDiff + 24) % 24;
+        this.city = newCity;
     }
 
 }
