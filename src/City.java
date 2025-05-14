@@ -85,8 +85,8 @@ public class City {
     }
     public int timeZoneFit() {
         double geographicOffset = longitude / 15.0;
-        double diffHours = geographicOffset - utc;
-        return (int) Math.round(Math.abs(diffHours * 3600));
+        double diffHour = geographicOffset - utc;
+        return (int) Math.round(Math.abs(diffHour * 3600));
     }
     public static Comparator<City> worstTimezoneFit() {
         return (a, b) -> Integer.compare(b.timeZoneFit(), a.timeZoneFit());

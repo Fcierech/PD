@@ -47,6 +47,7 @@ public class AnalogClock extends Clock {
         try (FileWriter writer = new FileWriter(svgFile))  {
             writer.write(svg.toString());
         } catch (IOException e) {
+            System.err.println("Błąd IO");
 
         }
     }
