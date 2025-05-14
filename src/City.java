@@ -1,20 +1,18 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.io.FileReader;
 
 public class City {
     private final String name;
-    private int utc = 0;
+    private int utc;
     private final double latitude;
     private final double longitude;
 
 
-    public City(String name, int utcOffset, double latitude, double longitude) {
+    public City(String name, int utc, double latitude, double longitude) {
         this.name = name;
         this.utc = utc;
         this.latitude = latitude;
@@ -29,13 +27,6 @@ public class City {
         return utc;
     }
 
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
 
     private static City parseLine(String line) {
         String[] values = line.split(",");
@@ -85,19 +76,38 @@ public class City {
 
         return fileData;
     }
-    public LocalTime localMeanTime (LocalTime time) {
-        long howManySecs = (long) ((longitude/180.0)*(12*60*60));
-        return time.plusSeconds(howManySecs);
+    public LocalTime localMeanTime(LocalTime time) {
+        double geographicOffsetHours = longitude / 15.0;
+        double diff = geographicOffsetHours - utc;
 
+        long diffSeconds = Math.round(diff * 3600);
+        return time.plusSeconds(diffSeconds);
     }
-    public int timeZoneFit(){
-        timezone*60*60 - ((position-180.0)*(12*60*60))
+    public int timeZoneFit() {
+        double geographicOffset = longitude / 15.0;
+        double diffHours = geographicOffset - utc;
+        return (int) Math.round(Math.abs(diffHours * 3600));
     }
-    public static int worstTimezoneFit (City a, City b){
-        a.timeZoneFit - b.timeZoneFit();
+    public static Comparator<City> worstTimezoneFit() {
+        return (a, b) -> Integer.compare(b.timeZoneFit(), a.timeZoneFit());
     }
 
 
-    public generateAnalogClocksSvg {
+
+    public static void generateAnalogClocksSvg (List<City> cities, AnalogClock clock) {
+        clock.setCurrentTime();
+        String catalogName = "AnalogClocks";
+        File catalog = new File(catalogName);
+        if (!catalog.exists()) {
+            catalog.mkdir();
+        }
+
+        for (City city : cities) {
+            clock.setCity(city);
+            clock.setCurrentTime();
+
+            String svgFile = catalogName + "/" + city.getName().replace(" ", "_") + ".svg";
+            clock.toSvg(svgFile);
+        }
     }
 }
